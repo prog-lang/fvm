@@ -38,59 +38,59 @@ const (
 // IS is INSTRUCTION SET, it contains string names and actions for every opcode
 // declared in the enum above.
 var IS = [EXIT + 1]Action{
-	{Name: "PUSH", Exec: func(m *Machine) { m.DS.Push(m.OPR) }},
-	{Name: "DROP", Exec: func(m *Machine) { m.DS.Drop() }},
+	{"PUSH", func(m *Machine) { m.DS.Push(m.OPR) }},
+	{"DROP", func(m *Machine) { m.DS.Drop() }},
 
-	{Name: "STORE", Exec: func(m *Machine) {
+	{"STORE", func(m *Machine) {
 		index := int(m.OPR)
 		for offset, bite := range Int32AsBytes(m.DS.Peek()) {
 			m.RAM[index+offset] = bite
 		}
 	}},
-	{Name: "MOVE", Exec: func(m *Machine) {
+	{"MOVE", func(m *Machine) {
 		index := int(m.OPR)
 		for offset, bite := range Int32AsBytes(m.DS.Pop()) {
 			m.RAM[index+offset] = bite
 		}
 	}},
-	{Name: "LOAD", Exec: func(m *Machine) {
+	{"LOAD", func(m *Machine) {
 		m.DS.Push(BytesAsInt32(m.RAM[m.OPR : m.OPR+4]))
 	}},
 
-	{Name: "ADD", Exec: func(m *Machine) {
+	{"ADD", func(m *Machine) {
 		m.DS.Push(m.DS.Pop() + m.DS.Pop())
 	}},
-	{Name: "SUB", Exec: func(m *Machine) {
+	{"SUB", func(m *Machine) {
 		m.DS.Push(-(m.DS.Pop() - m.DS.Pop()))
 	}},
-	{Name: "MUL", Exec: func(m *Machine) {
+	{"MUL", func(m *Machine) {
 		m.DS.Push(m.DS.Pop() * m.DS.Pop())
 	}},
-	{Name: "DIV", Exec: func(m *Machine) {
+	{"DIV", func(m *Machine) {
 		a := m.DS.Pop()
 		b := m.DS.Pop()
 		m.DS.Push(a / b)
 	}},
 
-	{Name: "LT", Exec: func(m *Machine) {
+	{"LT", func(m *Machine) {
 		m.DS.Push(BoolAsInt32(m.DS.Pop() > m.DS.Pop()))
 	}},
-	{Name: "EQ", Exec: func(m *Machine) {
+	{"EQ", func(m *Machine) {
 		m.DS.Push(BoolAsInt32(m.DS.Pop() == m.DS.Pop()))
 	}},
-	{Name: "GT", Exec: func(m *Machine) {
+	{"GT", func(m *Machine) {
 		m.DS.Push(BoolAsInt32(m.DS.Pop() < m.DS.Pop()))
 	}},
 
-	{Name: "JUMP", Exec: func(m *Machine) { m.IP = m.OPR }},
-	{Name: "CALL", Exec: func(m *Machine) { m.Call() }},
-	{Name: "BR", Exec: func(m *Machine) {
+	{"JUMP", func(m *Machine) { m.IP = m.OPR }},
+	{"CALL", func(m *Machine) { m.Call() }},
+	{"BR", func(m *Machine) {
 		if Int32AsBool(m.DS.Pop()) {
 			m.Call()
 		}
 	}},
-	{Name: "DONE", Exec: func(m *Machine) { m.IP = m.CS.Pop() }},
-	{Name: "EXIT", Exec: func(m *Machine) { m.OK = false }},
+	{"DONE", func(m *Machine) { m.IP = m.CS.Pop() }},
+	{"EXIT", func(m *Machine) { m.OK = false }},
 }
 
 type Action struct {
