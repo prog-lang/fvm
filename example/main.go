@@ -25,6 +25,7 @@ func main() {
 		DONE, 0,
 		PUSH, 42, // @magic
 		DONE, 0,
+
 		EXIT, 0, // catch all exit
 	}
 

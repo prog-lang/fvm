@@ -42,11 +42,11 @@ type Machine struct {
 	// amounts of data if need be. As it's defined now, RAM's capacity is 1MB.
 	RAM [1000000]byte
 
-	// Stack allows function calls and arithmetic to be possible.
-	*Stack
+	// DS is DATA STACK, it allows function calls and arithmetic to be possible.
+	DS *Stack
 
-	// Call is a call stack that stores return addresses.
-	Call *Stack
+	// CS is CALL STACK that stores return addresses.
+	CS *Stack
 
 	/* SPECIALISED REGISTERS */
 
@@ -66,22 +66,22 @@ type Machine struct {
 	// this register.
 	OCR int32
 
-	// ODR is OPERAND REGISTER. Fetch will put the next instruction's operand
+	// OPR is OPERAND REGISTER. Fetch will put the next instruction's operand
 	// into this register.
-	ODR int32
+	OPR int32
 
-	// OPR is OPERATION REGISTER. Decode will put appropriate operation into
+	// AR is ACTION REGISTER. Decode will put appropriate operation into
 	// this register based on the opcode we've fetched during the Fetch stage.
-	OPR Operation
+	AR Action
 }
 
 func New(data []byte, rom []int32) *Machine {
 	return &Machine{
-		Data:  data,
-		ROM:   rom,
-		OK:    true,
-		Stack: NewStack(),
-		Call:  NewStack(),
+		Data: data,
+		ROM:  rom,
+		OK:   true,
+		DS:   NewStack(),
+		CS:   NewStack(),
 	}
 }
 
@@ -101,16 +101,16 @@ func (m *Machine) Cycle() {
 func (m *Machine) Fetch() {
 	m.OCR = m.ROM[m.IP]
 	m.IP++
-	m.ODR = m.ROM[m.IP]
+	m.OPR = m.ROM[m.IP]
 	m.IP++
 }
 
 func (m *Machine) Decode() {
-	m.OPR = OPS[m.OCR]
+	m.AR = OPS[m.OCR]
 }
 
 func (m *Machine) Execute() {
-	m.OPR.Exec(m)
+	m.AR.Exec(m)
 }
 
 // Condition must always be checked through this method as BCR flag must be
@@ -123,5 +123,5 @@ func (m *Machine) Condition() (cond bool) {
 
 func (m *Machine) String() string {
 	return fmt.Sprintf("%-10s %-10d; %c %-20s #%v",
-		m.OPR, m.ODR, BoolToEmoji(m.BCR), m.Stack, m.RAM[:15])
+		m.AR, m.OPR, BoolToEmoji(m.BCR), m.DS, m.RAM[:15])
 }
