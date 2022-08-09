@@ -57,9 +57,15 @@ var IS = [EXIT + 1]Action{
 		m.DS.Push(BytesAsInt32(m.RAM[m.OPR : m.OPR+4]))
 	}},
 
-	{Name: "ADD", Exec: func(m *Machine) { m.DS.Push(m.DS.Pop() + m.DS.Pop()) }},
-	{Name: "SUB", Exec: func(m *Machine) { m.DS.Push(-(m.DS.Pop() - m.DS.Pop())) }},
-	{Name: "MUL", Exec: func(m *Machine) { m.DS.Push(m.DS.Pop() * m.DS.Pop()) }},
+	{Name: "ADD", Exec: func(m *Machine) {
+		m.DS.Push(m.DS.Pop() + m.DS.Pop())
+	}},
+	{Name: "SUB", Exec: func(m *Machine) {
+		m.DS.Push(-(m.DS.Pop() - m.DS.Pop()))
+	}},
+	{Name: "MUL", Exec: func(m *Machine) {
+		m.DS.Push(m.DS.Pop() * m.DS.Pop())
+	}},
 	{Name: "DIV", Exec: func(m *Machine) {
 		a := m.DS.Pop()
 		b := m.DS.Pop()
