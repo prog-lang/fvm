@@ -8,23 +8,27 @@ func Int32AsBytes(i int32) (b []byte) {
 	return
 }
 
-func BytesToInt32(b []byte) (i int32) {
+func BytesAsInt32(b []byte) (i int32) {
 	for x := 0; x < 4; x++ {
 		i |= int32(b[x]) << (8 * x)
 	}
 	return
 }
 
-func BoolToInt32(t bool) (i int32) {
+func BoolAsInt32(t bool) (i int32) {
 	if t {
 		return 1
 	}
 	return 0
 }
 
-func BoolToEmoji(t bool) rune {
+func BoolAsEmoji(t bool) rune {
 	if t {
 		return '✅'
 	}
 	return '❌'
+}
+
+func Int32AsBool(i int32) bool {
+	return i != 0
 }

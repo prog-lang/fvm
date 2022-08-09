@@ -1,10 +1,11 @@
 package machine
 
+// Opcode enumeration.
 const (
 	/* Stack manipulation */
+
 	PUSH int32 = iota // PUSH int32 on the stack
 	DROP              // DROP top value on the stack
-	COND              // COND moves top stack value into the BCR
 
 	/* RAM manipulation */
 	STORE // STORE top stack value at some location in RAM
@@ -27,17 +28,18 @@ const (
 	/* Program flow */
 
 	JUMP // JUMP IP to the specified instruction address in ROM
-	CALL // CALL pushed return address onto the call stack and then jumps
-	BR   // BR will perform a CALL if BCR is true
+	CALL // CALL pushes return address onto CS and then jumps
+	BR   // BR will perform a CALL if top DS value is true
 	DONE // DONE jumps back to the calling subroutine
 	EXIT // EXIT the program
 	// EXIT must always remain the last instruction in the set
 )
 
-var OPS = [EXIT + 1]Action{
+// IS is INSTRUCTION SET, it contains string names and actions for every opcode
+// declared in the enum above.
+var IS = [EXIT + 1]Action{
 	{Name: "PUSH", Exec: func(m *Machine) { m.DS.Push(m.OPR) }},
 	{Name: "DROP", Exec: func(m *Machine) { m.DS.Drop() }},
-	{Name: "COND", Exec: func(m *Machine) { m.BCR = m.DS.Pop() != 0 }},
 
 	{Name: "STORE", Exec: func(m *Machine) {
 		index := int(m.OPR)
@@ -52,12 +54,7 @@ var OPS = [EXIT + 1]Action{
 		}
 	}},
 	{Name: "LOAD", Exec: func(m *Machine) {
-		bytes := make([]byte, 4)
-		index := int(m.OPR)
-		for offset := 0; offset < 4; offset++ {
-			bytes[offset] = m.RAM[index+offset]
-		}
-		m.DS.Push(BytesToInt32(bytes))
+		m.DS.Push(BytesAsInt32(m.RAM[m.OPR : m.OPR+4]))
 	}},
 
 	{Name: "ADD", Exec: func(m *Machine) { m.DS.Push(m.DS.Pop() + m.DS.Pop()) }},
@@ -70,20 +67,20 @@ var OPS = [EXIT + 1]Action{
 	}},
 
 	{Name: "LT", Exec: func(m *Machine) {
-		m.DS.Push(BoolToInt32(m.DS.Pop() > m.DS.Pop()))
+		m.DS.Push(BoolAsInt32(m.DS.Pop() > m.DS.Pop()))
 	}},
 	{Name: "EQ", Exec: func(m *Machine) {
-		m.DS.Push(BoolToInt32(m.DS.Pop() == m.DS.Pop()))
+		m.DS.Push(BoolAsInt32(m.DS.Pop() == m.DS.Pop()))
 	}},
 	{Name: "GT", Exec: func(m *Machine) {
-		m.DS.Push(BoolToInt32(m.DS.Pop() < m.DS.Pop()))
+		m.DS.Push(BoolAsInt32(m.DS.Pop() < m.DS.Pop()))
 	}},
 
 	{Name: "JUMP", Exec: func(m *Machine) { m.IP = m.OPR }},
-	{Name: "CALL", Exec: func(m *Machine) { m.CS.Push(m.IP); m.IP = m.OPR }},
+	{Name: "CALL", Exec: func(m *Machine) { m.Call() }},
 	{Name: "BR", Exec: func(m *Machine) {
-		if m.Condition() {
-			m.IP = m.OPR
+		if Int32AsBool(m.DS.Pop()) {
+			m.Call()
 		}
 	}},
 	{Name: "DONE", Exec: func(m *Machine) { m.IP = m.CS.Pop() }},

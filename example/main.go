@@ -8,7 +8,7 @@ import (
 // using the JUMP and CALL instructions.
 const (
 	start int32 = 4
-	magic int32 = 16
+	magic int32 = 14
 )
 
 func main() {
@@ -20,10 +20,10 @@ func main() {
 		PUSH, 2, // @start
 		PUSH, 1,
 		SUB, 0,
-		COND, 0,
 		BR, magic,
 		DONE, 0,
 		PUSH, 42, // @magic
+		STORE, 0,
 		DONE, 0,
 
 		EXIT, 0, // catch all exit

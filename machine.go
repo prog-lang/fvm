@@ -54,10 +54,6 @@ type Machine struct {
 	// execution must be stopped.
 	OK bool
 
-	// BCR is BOOLEAN CONDITION REGISTER used by the BR instruction to decide
-	// wether to perform a branching call.
-	BCR bool
-
 	// IP is INSTRUCTION POINTER that points to an index in ROM from which our
 	// machine is supposed to fetch the next instruction.
 	IP int32
@@ -106,22 +102,19 @@ func (m *Machine) Fetch() {
 }
 
 func (m *Machine) Decode() {
-	m.AR = OPS[m.OCR]
+	m.AR = IS[m.OCR]
 }
 
 func (m *Machine) Execute() {
 	m.AR.Exec(m)
 }
 
-// Condition must always be checked through this method as BCR flag must be
-// reset to false after use.
-func (m *Machine) Condition() (cond bool) {
-	cond = m.BCR
-	m.BCR = false
-	return
+func (m *Machine) Call() {
+	m.CS.Push(m.IP)
+	m.IP = m.OPR
 }
 
 func (m *Machine) String() string {
-	return fmt.Sprintf("%-10s %-10d; %c %-20s #%v",
-		m.AR, m.OPR, BoolToEmoji(m.BCR), m.DS, m.RAM[:15])
+	return fmt.Sprintf("%-10s %-10d; %-20s #%v",
+		m.AR, m.OPR, m.DS, m.RAM[:15])
 }
