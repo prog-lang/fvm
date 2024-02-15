@@ -43,10 +43,10 @@ type Machine struct {
 	RAM [1000000]byte
 
 	// DS is DATA STACK, it allows function calls and arithmetic to be possible.
-	DS *Stack
+	DS *Stack[int32]
 
 	// CS is CALL STACK that stores return addresses.
-	CS *Stack
+	CS *Stack[int32]
 
 	/* SPECIALISED REGISTERS */
 
@@ -76,8 +76,8 @@ func New(data []byte, rom []int32) *Machine {
 		Data: data,
 		ROM:  rom,
 		OK:   true,
-		DS:   NewStack(),
-		CS:   NewStack(),
+		DS:   NewStack[int32](),
+		CS:   NewStack[int32](),
 	}
 }
 

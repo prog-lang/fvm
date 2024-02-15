@@ -2,38 +2,38 @@ package machine
 
 import "fmt"
 
-type Stack struct {
-	values []int32
+type Stack[T any] struct {
+	values []T
 }
 
-func NewStack() *Stack {
-	return &Stack{
-		values: make([]int32, 0, 100),
+func NewStack[T any]() *Stack[T] {
+	return &Stack[T]{
+		values: make([]T, 0, 100),
 	}
 }
 
-func (s *Stack) Push(value int32) {
+func (s *Stack[T]) Push(value T) {
 	s.values = append(s.values, value)
 }
 
-func (s *Stack) Pop() (value int32) {
+func (s *Stack[T]) Pop() (value T) {
 	value = s.Peek()
 	s.Drop()
 	return
 }
 
-func (s *Stack) Peek() int32 {
+func (s *Stack[T]) Peek() T {
 	return s.values[s.Top()]
 }
 
-func (s *Stack) Drop() {
+func (s *Stack[T]) Drop() {
 	s.values = s.values[:s.Top()]
 }
 
-func (s *Stack) Top() int {
+func (s *Stack[T]) Top() int {
 	return len(s.values) - 1
 }
 
-func (s *Stack) String() string {
+func (s *Stack[T]) String() string {
 	return fmt.Sprint("$", s.values)
 }
