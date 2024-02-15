@@ -1,6 +1,5 @@
 package machine
 
-// Opcode enumeration.
 const (
 	/* Stack manipulation */
 
