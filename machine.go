@@ -2,7 +2,8 @@ package machine
 
 import (
 	"fmt"
-	"log"
+
+	"github.com/charmbracelet/log"
 )
 
 type Machine struct {
@@ -91,7 +92,7 @@ func (m *Machine) Cycle() {
 	m.Fetch()
 	m.Decode()
 	m.Execute()
-	log.Print(m)
+	log.Debug(m)
 }
 
 func (m *Machine) Fetch() {
@@ -109,6 +110,25 @@ func (m *Machine) Execute() {
 	m.AR.Exec(m)
 }
 
+func (m *Machine) Call() {
+	if m.isCallToStd() {
+		m.Std(int(-m.OPR))
+	} else {
+		m.CS.Push(m.IP)
+		m.IP = m.OPR
+	}
+}
+
+func (m *Machine) Std(addr int) {
+	action := Std[addr]
+	log.Debug(action.Name + "()")
+	action.Exec(m)
+}
+
 func (m *Machine) String() string {
 	return fmt.Sprintf("%-10s %-10d; %-20s #%v", m.AR, m.OPR, m.DS, m.RAM[:15])
+}
+
+func (m *Machine) isCallToStd() bool {
+	return m.OPR < 0
 }

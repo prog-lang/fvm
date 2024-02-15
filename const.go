@@ -11,5 +11,5 @@ const (
 const (
 	/* MAGIC CONSTANTS */
 
-	int32Size = 4
+	Int32Size = 4
 )
