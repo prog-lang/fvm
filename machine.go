@@ -115,6 +115,5 @@ func (m *Machine) Call() {
 }
 
 func (m *Machine) String() string {
-	return fmt.Sprintf("%-10s %-10d; %-20s #%v",
-		m.AR, m.OPR, m.DS, m.RAM[:15])
+	return fmt.Sprintf("%-10s %-10d; %-20s #%v", m.AR, m.OPR, m.DS, m.RAM[:15])
 }
