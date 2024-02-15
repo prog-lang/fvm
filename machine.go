@@ -39,10 +39,10 @@ type Machine struct {
 	/* MUTABLE MEMORY */
 
 	// RAM is RANDOM ACCESS MEMORY. Here, our program may decide to store large
-	// amounts of data if need be. As it's defined now, RAM's capacity is 1MB.
-	RAM [1000000]byte
+	// amounts of data if need be.
+	RAM []byte
 
-	// DS is DATA STACK, it allows function calls and arithmetic to be possible.
+	// DS is DATA STACK, it allows for function calls and arithmetic.
 	DS *Stack[byte]
 
 	// CS is CALL STACK that stores return addresses.
@@ -50,8 +50,7 @@ type Machine struct {
 
 	/* SPECIALISED REGISTERS */
 
-	// OK boolean flag displays machine's health status. If OK == false,
-	// execution must be stopped.
+	// OK boolean flag displays machine's health status. If !OK, stop execution.
 	OK bool
 
 	// IP is INSTRUCTION POINTER that points to an index in ROM from which our
@@ -75,6 +74,7 @@ func New(data []byte, rom []int32) *Machine {
 	return &Machine{
 		Data: data,
 		ROM:  rom,
+		RAM:  make([]byte, defaultRAMCapacity),
 		OK:   true,
 		DS:   NewStack[byte](defaultDataStackCapacity),
 		CS:   NewStack[int32](defaultCallStackCapacity),

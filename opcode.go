@@ -50,7 +50,7 @@ var IS = [EXIT + 1]Action{
 		}
 	}},
 	{"LOAD", func(m *Machine) {
-		m.DS.Push(m.RAM[m.OPR : m.OPR+4]...)
+		m.DS.Push(m.RAM[m.OPR : m.OPR+int32Size]...)
 	}},
 
 	{"ADD", func(m *Machine) {
