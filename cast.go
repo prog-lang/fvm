@@ -15,7 +15,14 @@ func BytesAsInt32(b []byte) (i int32) {
 	return
 }
 
-func BoolAsInt32(t bool) (i int32) {
+func BoolAsInt32(t bool) int32 {
+	if t {
+		return 1
+	}
+	return 0
+}
+
+func BoolAsByte(t bool) byte {
 	if t {
 		return 1
 	}
@@ -31,4 +38,8 @@ func BoolAsEmoji(t bool) rune {
 
 func Int32AsBool(i int32) bool {
 	return i != 0
+}
+
+func ByteAsBool(b byte) bool {
+	return b != 0
 }

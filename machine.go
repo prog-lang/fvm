@@ -43,7 +43,7 @@ type Machine struct {
 	RAM [1000000]byte
 
 	// DS is DATA STACK, it allows function calls and arithmetic to be possible.
-	DS *Stack[int32]
+	DS *Stack[byte]
 
 	// CS is CALL STACK that stores return addresses.
 	CS *Stack[int32]
@@ -74,10 +74,10 @@ type Machine struct {
 func New(data []byte, rom []int32) *Machine {
 	return &Machine{
 		Data: data,
-		ROM:  append(rom, EXIT, 0), // append EXIT automatically
+		ROM:  rom,
 		OK:   true,
-		DS:   NewStack[int32](),
-		CS:   NewStack[int32](),
+		DS:   NewStack[byte](defaultDataStackCapacity),
+		CS:   NewStack[int32](defaultCallStackCapacity),
 	}
 }
 
@@ -107,11 +107,6 @@ func (m *Machine) Decode() {
 
 func (m *Machine) Execute() {
 	m.AR.Exec(m)
-}
-
-func (m *Machine) Call() {
-	m.CS.Push(m.IP)
-	m.IP = m.OPR
 }
 
 func (m *Machine) String() string {
