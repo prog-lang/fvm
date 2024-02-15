@@ -14,7 +14,7 @@ const (
 func main() {
 	var data []byte
 
-	program := []int32{
+	rom := []int32{
 		CALL, start, // @setup
 		EXIT, 0,
 		PUSH, 2, // @start
@@ -24,10 +24,9 @@ func main() {
 		DONE, 0,
 		PUSH, 42, // @magic
 		STORE, 0,
+		DROP, 0,
 		DONE, 0,
-
-		EXIT, 0, // catch all exit
 	}
 
-	New(data, program).Run()
+	New(data, rom).Run()
 }

@@ -74,7 +74,7 @@ type Machine struct {
 func New(data []byte, rom []int32) *Machine {
 	return &Machine{
 		Data: data,
-		ROM:  rom,
+		ROM:  append(rom, EXIT, 0), // append EXIT automatically
 		OK:   true,
 		DS:   NewStack[int32](),
 		CS:   NewStack[int32](),
