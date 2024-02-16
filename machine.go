@@ -49,7 +49,7 @@ type Machine struct {
 	// CS is CALL STACK that stores return addresses.
 	CS *Stack[int32]
 
-	/* SPECIALISED REGISTERS */
+	/* SPECIALIZED REGISTERS */
 
 	// OK boolean flag displays machine's health status. If !OK, stop execution.
 	OK bool
