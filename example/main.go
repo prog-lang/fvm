@@ -19,9 +19,8 @@ func init() {
 }
 
 func main() {
-	message := "Hello, world!\n"
-	length := int32(len(message))
-	data := []byte(message)
+	url := "https://google.com"
+	data := []byte(url)
 
 	rom := []int32{
 		// 1. @start is the entrypoint
@@ -30,8 +29,8 @@ func main() {
 		EXIT, 0,
 
 		PUSH, 0, // @start
-		PUSH, length,
-		CALL, std.Print_data,
+		PUSH, int32(len(url)),
+		CALL, std.HTTP_GET,
 		DONE, 0,
 	}
 

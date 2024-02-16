@@ -16,6 +16,7 @@ const (
 	I32_gt // func GreaterThan(int32, int32) byte
 
 	Print_data // func Print(addr int32, len int32)
+	HTTP_GET   // func HTTP_GET(url string) string
 
 	count
 )
