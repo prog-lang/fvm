@@ -1,7 +1,7 @@
 package machine
 
 import (
-	"machine/opcode"
+	"github.com/prog-lang/pure/opcode"
 
 	"github.com/charmbracelet/log"
 )

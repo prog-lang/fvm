@@ -2,7 +2,8 @@ package machine
 
 import (
 	"fmt"
-	"machine/std"
+
+	"github.com/prog-lang/pure/std"
 
 	"github.com/charmbracelet/log"
 )

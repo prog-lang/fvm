@@ -1,11 +1,10 @@
 package main
 
 import (
-	"machine"
-	. "machine/opcode"
-	"machine/std"
-
 	"github.com/charmbracelet/log"
+	"github.com/prog-lang/pure/machine"
+	. "github.com/prog-lang/pure/opcode"
+	"github.com/prog-lang/pure/std"
 )
 
 func init() {

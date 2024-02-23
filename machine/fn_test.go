@@ -1,9 +1,9 @@
 package machine
 
 import (
-	"machine/std"
 	"testing"
 
+	"github.com/prog-lang/pure/std"
 	"github.com/stretchr/testify/assert"
 )
 

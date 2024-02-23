@@ -1,4 +1,4 @@
-module machine
+module github.com/prog-lang/pure
 
 go 1.20
 
