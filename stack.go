@@ -12,8 +12,9 @@ func NewStack[T any](cap int) *Stack[T] {
 	}
 }
 
-func (s *Stack[T]) Push(value ...T) {
+func (s *Stack[T]) Push(value ...T) *Stack[T] {
 	s.values = append(s.values, value...)
+	return s
 }
 
 func (s *Stack[T]) Pop() (creme T) {
@@ -34,8 +35,9 @@ func (s *Stack[T]) Glance(offset int) []T {
 	return s.values[s.Top(offset):]
 }
 
-func (s *Stack[T]) Drop(offset int) {
+func (s *Stack[T]) Drop(offset int) *Stack[T] {
 	s.values = s.values[:s.Top(offset)]
+	return s
 }
 
 func (s *Stack[T]) Top(offset int) int {
