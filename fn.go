@@ -5,7 +5,7 @@ type Fn struct {
 	eval Eval
 }
 
-type Eval func([]Object) Object
+type Eval func(args []Object) Object
 
 func MakeFn(eval Eval) Fn {
 	return Fn{
@@ -13,10 +13,8 @@ func MakeFn(eval Eval) Fn {
 	}
 }
 
-func (fn Fn) Feed(arg Object) Function {
-	var args []Object
-	copy(args, fn.args)
-	fn.args = append(args, arg)
+func (fn Fn) Feed(args []Object) Function {
+	fn.args = append(fn.args, args...)
 	return fn
 }
 

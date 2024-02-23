@@ -7,5 +7,5 @@ import (
 )
 
 func TestU8x4AsI32(t *testing.T) {
-	assert.Equal(t, int32(1), U8x4AsI32([]byte{1, 0, 0, 0}))
+	assert.Equal(t, int32(1), U8x4AsI32([]uint8{1, 0, 0, 0}))
 }

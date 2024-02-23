@@ -1,49 +1,55 @@
 package main
 
 import (
-	"fmt"
 	"machine"
 	. "machine/opcode"
+	"machine/std"
 
 	"github.com/charmbracelet/log"
 )
 
 func init() {
-	log.SetLevel(log.DebugLevel)
+	log.SetLevel(log.ErrorLevel)
 }
 
 const (
-	main_ = 0
-	life  = 30
-	zero  = 40
+	start = 0
+	zero  = 45
+	life  = 55
 )
 
 var (
-	data = []byte("https://google.com")
-	code = []byte{
-		// [$main @0]: () -> i32
+	data = []uint8("https://google.com")
+	code = []uint8{
+		// $start: () -> ()
+		PUSH_FN, uint8(std.Print), 0, 0, 0, // PUSH print
 		PUSH_CMD, zero, 0, 0, 0, // PUSH $zero
 		PUSH_CMD, life, 0, 0, 0, // PUSH $life
 		PUSH_BOOL, 1, 0, 0, 0, // PUSH true
-		BRANCH, 0, 0, 0, 0, // IF
+		BRANCH, 0, 0, 0, 0, // IF true -> $life
 		CALL, 0, 0, 0, 0, // CALL $life
+		FEED, 1, 0, 0, 0, // FEED 2
+		CALL, 0, 0, 0, 0, // CALL print
 		RETURN, 0, 0, 0, 0,
 
-		// [$life @30]: () -> i32
-		PUSH_I32, 42, 0, 0, 0, // PUSH 42
-		RETURN, 0, 0, 0, 0,
-
-		// [$zero @40]: () -> i32
+		// $zero: () -> i32
 		PUSH_I32, 0, 0, 0, 0, // PUSH 0
+		RETURN, 0, 0, 0, 0,
+
+		// $life: () -> i32
+		PUSH_FN, uint8(std.Add_I32), 0, 0, 0, // PUSH add[i32]
+		PUSH_I32, 2, 0, 0, 0, // PUSH 2
+		PUSH_I32, 40, 0, 0, 0, // PUSH 40
+		FEED, 2, 0, 0, 0, // FEED 2
+		CALL, 0, 0, 0, 0, // CALL add[i32]
 		RETURN, 0, 0, 0, 0,
 	}
 )
 
 func main() {
-	result := machine.NewCmd(
+	machine.MakeCmd(
 		machine.NewROM(data),
 		machine.NewROM(code),
-		main_,
+		start,
 	).Call()
-	fmt.Println(result)
 }

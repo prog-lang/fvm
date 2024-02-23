@@ -11,7 +11,7 @@ type Cmd struct {
 }
 
 type Data interface {
-	ReadAt(addr, length int32) []byte
+	ReadAt(addr, length int32) []uint8
 }
 
 type Code interface {
@@ -20,7 +20,7 @@ type Code interface {
 
 type Do func(*Cmd)
 
-func NewCmd(data Data, code Code, ip int32) Cmd {
+func MakeCmd(data Data, code Code, ip int32) Cmd {
 	return Cmd{
 		data: data,
 		code: code,
@@ -29,10 +29,8 @@ func NewCmd(data Data, code Code, ip int32) Cmd {
 	}
 }
 
-func (cmd Cmd) Feed(arg Object) Function {
-	var args []Object
-	copy(args, cmd.args)
-	cmd.args = append(args, arg)
+func (cmd Cmd) Feed(args []Object) Function {
+	cmd.args = append(cmd.args, args...)
 	return cmd
 }
 
