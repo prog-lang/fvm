@@ -11,5 +11,10 @@ const (
 const (
 	/* MAGIC CONSTANTS */
 
-	Int32Size = 4
+	U8Size  = 1
+	I32Size = 4
+
+	OpcodeSize      = U8Size
+	OperandSize     = I32Size
+	InstructionSize = OpcodeSize + OperandSize
 )
