@@ -1,24 +1,14 @@
 package std
 
 const (
-	_ int32 = -iota
+	ID int32 = iota // func id(any) any
 
-	I32_add // func Add(int32, int32) int32
-	I32_sub // func Subtract(int32, int32) int32
-	I32_mul // func Multiply(int32, int32) int32
-	I32_div // func Divide(int32, int32) int32
+	Add_I32 // func add(i32, i32) i32
+	Sub_I32 // func sub(i32, i32) i32
+	Mul_I32 // func mul(i32, i32) i32
+	Div_I32 // func div(i32, i32) i32
 
-	I32_byte // func Convert(int32) byte
-	Byte_i32 // func Convert(byte) int32
+	Print // func print(any)
 
-	I32_lt // func LessThan(int32, int32) byte
-	I32_eq // func Equal(int32, int32) byte
-	I32_gt // func GreaterThan(int32, int32) byte
-
-	Print_data // func Print(addr int32, len int32)
-	HTTP_GET   // func HTTP_GET(url string) string
-
-	count
+	Count
 )
-
-const Count = -count
