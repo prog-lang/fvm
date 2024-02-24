@@ -40,7 +40,7 @@ func (src *Source) MakeCmd() (Cmd, error) {
 }
 
 func (src *Source) data() ([]uint8, error) {
-	length, err := src.readI32()
+	length, err := src.readU64()
 	if err != nil {
 		return nil, err
 	}
@@ -51,13 +51,13 @@ func (src *Source) code() ([]uint8, error) {
 	return io.ReadAll(src.r)
 }
 
-func (src *Source) readI32() (int32, error) {
-	buf := make([]uint8, SizeI32)
+func (src *Source) readU64() (uint64, error) {
+	buf := make([]uint8, SizeU64)
 	_, err := io.ReadFull(src.r, buf)
-	return U8x4AsI32(buf), err
+	return U8x8AsU64(buf), err
 }
 
-func (src *Source) readN(n int32) (buf []uint8, err error) {
+func (src *Source) readN(n uint64) (buf []uint8, err error) {
 	buf = make([]uint8, n)
 	_, err = io.ReadFull(src.r, buf)
 	return

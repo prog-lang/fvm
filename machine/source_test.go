@@ -10,13 +10,13 @@ import (
 
 func TestSource(t *testing.T) {
 	var data []uint8
-	dataLength := I32AsU8x4(int32(len(data)))
+	dataLength := U64AsU8x8(uint64(len(data)))
 	dataSection := append(dataLength, data...)
 
 	codeSection := []uint8{
-		NOP, 0, 0, 0, 0,
-		PUSH_I32, 42, 0, 0, 0,
-		RETURN, 0, 0, 0, 0,
+		uint8(NOP), 0, 0, 0, 0, 0, 0, 0,
+		uint8(PUSH_I32), 0, 0, 0, 42, 0, 0, 0,
+		uint8(RETURN), 0, 0, 0, 0, 0, 0, 0,
 	}
 
 	r := bytes.NewReader(append(dataSection, codeSection...))

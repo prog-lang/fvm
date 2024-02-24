@@ -15,6 +15,28 @@ func U8x4AsI32(b []uint8) (i int32) {
 	return
 }
 
+func U8x4AsU32(b []uint8) (i uint32) {
+	for x := 0; x < 4; x++ {
+		i |= uint32(b[x]) << (8 * x)
+	}
+	return
+}
+
+func U8x8AsU64(b []uint8) (i uint64) {
+	for x := 0; x < 8; x++ {
+		i |= uint64(b[x]) << (8 * x)
+	}
+	return
+}
+
+func U64AsU8x8(u64 uint64) (b []uint8) {
+	b = make([]uint8, 8)
+	for x := 0; x < 8; x++ {
+		b[x] = uint8(u64 >> (8 * x))
+	}
+	return
+}
+
 func BoolAsI32(t bool) int32 {
 	if t {
 		return 1

@@ -1,7 +1,7 @@
 package opcode
 
 const (
-	NOP uint8 = iota // DO NOTHING
+	NOP uint32 = iota // DO NOTHING
 
 	/* Stack manipulation */
 
