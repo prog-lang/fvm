@@ -25,14 +25,17 @@ func SourceFromReader(r io.Reader) *Source {
 
 func (src *Source) MakeCmd() (Cmd, error) {
 	const start = 0
+
 	data, err := src.data()
 	if err != nil {
 		return Cmd{}, err
 	}
+
 	code, err := src.code()
 	if err != nil {
 		return Cmd{}, err
 	}
+
 	return MakeCmd(NewROM(data), NewROM(code), start), nil
 }
 
