@@ -16,7 +16,7 @@ func (rom *ROM) ReadAt(addr, length int32) []uint8 {
 
 func (rom *ROM) Fetch(addr int32) Do {
 	opcode := rom.u8(addr)
-	operand := rom.u8x4(addr + OpcodeSize)
+	operand := rom.u8x4(addr + SizeOpcode)
 	return is[opcode](operand)
 }
 

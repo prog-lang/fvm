@@ -38,7 +38,7 @@ func (cmd Cmd) Call() Object {
 	cmd.initStack()
 	for !cmd.done {
 		cmd.code.Fetch(cmd.ip)(&cmd)
-		cmd.ip += InstructionSize
+		cmd.ip += SizeInstruction
 	}
 	return cmd.returnValue()
 }
