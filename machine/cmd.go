@@ -5,9 +5,9 @@ type Cmd struct {
 	code Code
 	ip   int32
 
-	args []Object
-	ds   *Stack[Object]
-	done bool
+	args  []Object
+	stack *Stack[Object]
+	done  bool
 }
 
 type Data interface {
@@ -35,22 +35,16 @@ func (cmd Cmd) Feed(args []Object) Function {
 }
 
 func (cmd Cmd) Call() Object {
-	cmd.initStack()
+	cmd.stack = NewStack[Object](Unit{})
+	//*                         ^^^^^^^^
+	//? Unit{} is the default return value of any Cmd.
+	//? It is pushed to the bottom of the data stack by default in order to
+	//? forego return emptiness checks.
+
 	for !cmd.done {
 		cmd.code.Fetch(cmd.ip)(&cmd)
 		cmd.ip += SizeInstruction
 	}
-	return cmd.returnValue()
-}
 
-func (cmd *Cmd) initStack() {
-	cmd.ds = NewStack[Object](defaultDataStackCapacity).Push(Unit{})
-	//*                                                ^^^^^^^^^^^^
-	//? Unit{} is the default return value of any Cmd.
-	//? It is pushed to the bottom of the data stack by default in order to
-	//? forego return emptiness checks.
-}
-
-func (cmd *Cmd) returnValue() Object {
-	return cmd.ds.Pop()
+	return cmd.stack.Pop()
 }

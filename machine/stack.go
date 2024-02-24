@@ -6,14 +6,14 @@ type Stack[T any] struct {
 	values []T
 }
 
-func NewStack[T any](cap int) *Stack[T] {
+func NewStack[T any](values ...T) *Stack[T] {
 	return &Stack[T]{
-		values: make([]T, 0, cap),
+		values: values,
 	}
 }
 
-func (s *Stack[T]) Push(value ...T) *Stack[T] {
-	s.values = append(s.values, value...)
+func (s *Stack[T]) Push(values ...T) *Stack[T] {
+	s.values = append(s.values, values...)
 	return s
 }
 

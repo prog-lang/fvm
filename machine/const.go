@@ -1,14 +1,7 @@
 package machine
 
+// Magic constants.
 const (
-	/* SETTINGS */
-
-	defaultDataStackCapacity = 1 << 10
-)
-
-const (
-	/* MAGIC CONSTANTS */
-
 	SizeU8  = 1
 	SizeI32 = 4
 
