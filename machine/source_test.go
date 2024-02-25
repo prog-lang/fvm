@@ -13,9 +13,14 @@ func TestSource(t *testing.T) {
 	dataLength := U64AsU8x8(uint64(len(data)))
 	dataSection := append(dataLength, data...)
 
+	const first = 40
 	codeSection := []uint8{
-		uint8(NOP), 0, 0, 0, 0, 0, 0, 0,
+		uint8(PUSH_CMD), 0, 0, 0, first, 0, 0, 0,
 		uint8(PUSH_I32), 0, 0, 0, 42, 0, 0, 0,
+		uint8(FEED), 0, 0, 0, 1, 0, 0, 0,
+		uint8(CALL), 0, 0, 0, 0, 0, 0, 0,
+		uint8(RETURN), 0, 0, 0, 0, 0, 0, 0,
+		uint8(PUSH_ARG), 0, 0, 0, 0, 0, 0, 0, // first
 		uint8(RETURN), 0, 0, 0, 0, 0, 0, 0,
 	}
 

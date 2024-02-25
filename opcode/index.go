@@ -11,6 +11,7 @@ const (
 	PUSH_I32  // Push i32 onto the stack
 	PUSH_FN   // Push fn onto the stack (std)
 	PUSH_CMD  // Push cmd onto the stack
+	PUSH_ARG  // Push cmd argument (by its index) onto the stack
 	DROP      // Drop top value off of the stack
 
 	/* Program flow */

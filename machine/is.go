@@ -36,17 +36,17 @@ var is = [opcode.Count]func([]uint8) Do{
 	func(operand []uint8) Do {
 		addr := U8x4AsI32(operand)
 		log.Debug("PUSH_FN", "@", addr)
-		return func(cmd *Cmd) {
-			eval := stdlib[addr]
-			cmd.stack.Push(MakeFn(eval))
-		}
+		return func(cmd *Cmd) { cmd.stack.Push(MakeFn(stdlib[addr])) }
 	},
 	func(operand []uint8) Do {
 		ip := U8x4AsI32(operand)
 		log.Debug("PUSH_CMD", "@", ip)
-		return func(cmd *Cmd) {
-			cmd.stack.Push(MakeCmd(cmd.data, cmd.code, ip))
-		}
+		return func(cmd *Cmd) { cmd.stack.Push(MakeCmd(cmd.data, cmd.code, ip)) }
+	},
+	func(operand []uint8) Do {
+		index := U8x4AsI32(operand)
+		log.Debug("PUSH_ARG", "#", index)
+		return func(cmd *Cmd) { cmd.stack.Push(cmd.args[index]) }
 	},
 	func(operand []uint8) Do {
 		n := int(U8x4AsI32(operand))
