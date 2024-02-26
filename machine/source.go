@@ -5,6 +5,14 @@ import (
 	"os"
 )
 
+// Source is the I/O bound type used to read files, extract bytecode, and
+// initialize Pure machine from it.
+//
+// Example:
+//
+//	src, _ := SourceFromFile("executable")
+//	cmd, _ := src.Main()
+//	cmd.Feed(Unit{})
 type Source struct {
 	r io.Reader
 }
@@ -23,8 +31,9 @@ func SourceFromReader(r io.Reader) *Source {
 	}
 }
 
-func (src *Source) MakeCmd() (Cmd, error) {
+func (src *Source) Main() (Cmd, error) {
 	const start = 0
+	const argc = 0
 
 	data, err := src.data()
 	if err != nil {
@@ -36,7 +45,7 @@ func (src *Source) MakeCmd() (Cmd, error) {
 		return Cmd{}, err
 	}
 
-	return MakeCmd(NewROM(data), NewROM(code), start), nil
+	return MakeCmd(ReadOnly(data), ReadOnly(code), start, argc), nil
 }
 
 func (src *Source) data() ([]uint8, error) {

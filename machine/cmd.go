@@ -1,40 +1,53 @@
 package machine
 
+// Cmd (a.k.a. "Command") is a
+//
+//  1. sequence of executable instructions
+//  2. that follows the Function interface
+//  3. and can be treated like a regular Object
+//
+// It is used to contain compiled bytecode instructions generated from the
+// human-written source code.
 type Cmd struct {
-	data Data
-	code Code
-	ip   int32
-
+	data  Data
+	code  Code
+	ip    uint32
+	argc  uint32
 	args  []Object
 	stack *Stack[Object]
 	done  bool
 }
 
 type Data interface {
-	ReadAt(addr, length int32) []uint8
+	ReadAt(addr, length uint32) []uint8
 }
 
 type Code interface {
-	Fetch(addr int32) Do
+	Fetch(addr uint32) Do
+	FetchInstruction(addr uint32) (opcode uint32, operand []uint8)
 }
 
 type Do func(*Cmd)
 
-func MakeCmd(data Data, code Code, ip int32) Cmd {
+func MakeCmd(data Data, code Code, ip, argc uint32) Cmd {
 	return Cmd{
 		data: data,
 		code: code,
 		ip:   ip,
+		argc: argc,
 		args: make([]Object, 0),
 	}
 }
 
-func (cmd Cmd) Feed(args []Object) Function {
-	cmd.args = append(cmd.args, args...)
+func (cmd Cmd) Feed(arg Object) Object {
+	cmd.args = append(cmd.args, arg)
+	if uint32(len(cmd.args)) >= cmd.argc {
+		return cmd.call()
+	}
 	return cmd
 }
 
-func (cmd Cmd) Call() Object {
+func (cmd Cmd) call() Object {
 	cmd.stack = NewStack[Object](Unit{})
 	//*                         ^^^^^^^^
 	//? Unit{} is the default return value of any Cmd.

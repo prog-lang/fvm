@@ -39,12 +39,12 @@ func run(ctx *cli.Context) error {
 		return err
 	}
 
-	cmd, err := src.MakeCmd()
+	cmd, err := src.Main()
 	if err != nil {
 		return err
 	}
 
-	cmd.Call()
+	cmd.Feed(machine.Unit{})
 	return nil
 }
 

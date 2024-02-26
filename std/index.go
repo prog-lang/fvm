@@ -1,7 +1,7 @@
 package std
 
 const (
-	ID int32 = iota // func id(any) any
+	ID uint32 = iota // func id(any) any
 
 	Add_I32 // func add(i32, i32) i32
 	Sub_I32 // func sub(i32, i32) i32

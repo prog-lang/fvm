@@ -1,6 +1,6 @@
 package machine
 
-// Magic constants.
+// Byte sizes for different things.
 const (
 	SizeU8  = 1
 	SizeI32 = 4 * SizeU8

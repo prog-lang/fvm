@@ -17,7 +17,6 @@ const (
 	/* Program flow */
 
 	FEED   // FEED N top values into the function beneath
-	CALL   // CALL top function off of the stack
 	BRANCH // BRANCH left or right based on a condition
 	RETURN // Return from the routine
 
