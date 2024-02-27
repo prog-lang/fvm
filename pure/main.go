@@ -29,9 +29,17 @@ var debug = &cli.BoolFlag{
 
 var (
 	com = &cli.Command{
-		Name:      "com",
-		Aliases:   []string{"c"},
-		Usage:     "Compile Pure to bytecode",
+		Name:    "com",
+		Aliases: []string{"c"},
+		Usage:   "Compile Pure to bytecode",
+		Flags: []cli.Flag{
+			&cli.PathFlag{
+				Name:    "output",
+				Aliases: []string{"o"},
+				Usage:   "Path to output file",
+				Value:   "main.pure.exe",
+			},
+		},
 		Args:      true,
 		ArgsUsage: "<SOURCE>",
 		Action: func(ctx *cli.Context) error {
@@ -40,7 +48,7 @@ var (
 				log.Error("Did you forget to specify the SOURCE file?")
 				return cli.ShowAppHelp(ctx)
 			}
-			return purec(ctx, name)
+			return purec(ctx, name, ctx.Path("output"))
 		},
 	}
 
@@ -67,23 +75,23 @@ var (
 		Args:      true,
 		ArgsUsage: "<SOURCE>",
 		Action: func(ctx *cli.Context) error {
-			const bin = "main.pure.exe"
+			const output = "tmp.pure.exe"
 			name := ctx.Args().First()
 			if name == "" {
 				log.Error("Did you forget to specify the SOURCE file?")
 				return cli.ShowAppHelp(ctx)
 			}
-			if err := purec(ctx, name); err != nil {
+			if err := purec(ctx, name, output); err != nil {
 				return err
 			}
-			defer os.Remove(bin)
-			return execute(bin)
+			defer os.Remove(output)
+			return execute(output)
 		},
 	}
 )
 
-func purec(ctx *cli.Context, name string) error {
-	cmd := exec.Command("purec", name)
+func purec(ctx *cli.Context, name, output string) error {
+	cmd := exec.Command("purec", name, "--output", output)
 	cmd.Stdin = ctx.App.Reader
 	cmd.Stdout = ctx.App.Writer
 	cmd.Stderr = ctx.App.ErrWriter
