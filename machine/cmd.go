@@ -1,5 +1,7 @@
 package machine
 
+import "fmt"
+
 // Cmd (a.k.a. "Command") is a
 //
 //  1. sequence of executable instructions
@@ -60,4 +62,8 @@ func (cmd Cmd) call() Object {
 	}
 
 	return cmd.stack.Pop()
+}
+
+func (cmd Cmd) String() string {
+	return fmt.Sprintf("Cmd<%d>(%d/%d)", cmd.ip, len(cmd.args), cmd.argc)
 }

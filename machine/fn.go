@@ -1,5 +1,7 @@
 package machine
 
+import "fmt"
+
 // Fn (a.k.a "Builtin Function") is a special type that implement the Function
 // interface. It is used to carry stdlib functions.
 type Fn struct {
@@ -27,4 +29,8 @@ func (fn Fn) Feed(arg Object) Object {
 
 func (fn Fn) call() Object {
 	return fn.eval(fn.args)
+}
+
+func (fn Fn) String() string {
+	return fmt.Sprintf("Fn(%d/%d)", len(fn.args), fn.argc)
 }
