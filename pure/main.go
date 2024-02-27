@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"os/exec"
 
 	"github.com/charmbracelet/log"
 	"github.com/prog-lang/pure/machine"
@@ -9,12 +10,11 @@ import (
 )
 
 var app = cli.App{
-	Name:      "pure",
-	Usage:     "Execute Pure bytecode",
-	Flags:     []cli.Flag{debug},
-	Args:      true,
-	ArgsUsage: "<SOURCE>",
-	Action:    run,
+	Name:     "pure",
+	Usage:    "Language for purely functional microservices",
+	Flags:    []cli.Flag{debug},
+	Action:   cli.ShowAppHelp,
+	Commands: []*cli.Command{com, exe, run},
 }
 
 var debug = &cli.BoolFlag{
@@ -27,13 +27,70 @@ var debug = &cli.BoolFlag{
 	},
 }
 
-func run(ctx *cli.Context) error {
-	name := ctx.Args().First()
-	if name == "" {
-		log.Error("Did you forget to specify the SOURCE file?")
-		return cli.ShowAppHelp(ctx)
+var (
+	com = &cli.Command{
+		Name:      "com",
+		Aliases:   []string{"c"},
+		Usage:     "Compile Pure to bytecode",
+		Args:      true,
+		ArgsUsage: "<SOURCE>",
+		Action: func(ctx *cli.Context) error {
+			name := ctx.Args().First()
+			if name == "" {
+				log.Error("Did you forget to specify the SOURCE file?")
+				return cli.ShowAppHelp(ctx)
+			}
+			return purec(ctx, name)
+		},
 	}
 
+	exe = &cli.Command{
+		Name:      "exe",
+		Aliases:   []string{"e"},
+		Usage:     "Execute Pure from bytecode",
+		Args:      true,
+		ArgsUsage: "<SOURCE>",
+		Action: func(ctx *cli.Context) error {
+			name := ctx.Args().First()
+			if name == "" {
+				log.Error("Did you forget to specify the SOURCE file?")
+				return cli.ShowAppHelp(ctx)
+			}
+			return execute(name)
+		},
+	}
+
+	run = &cli.Command{
+		Name:      "run",
+		Aliases:   []string{"r"},
+		Usage:     "Instantly run Pure from source",
+		Args:      true,
+		ArgsUsage: "<SOURCE>",
+		Action: func(ctx *cli.Context) error {
+			const bin = "main.pure.exe"
+			name := ctx.Args().First()
+			if name == "" {
+				log.Error("Did you forget to specify the SOURCE file?")
+				return cli.ShowAppHelp(ctx)
+			}
+			if err := purec(ctx, name); err != nil {
+				return err
+			}
+			defer os.Remove(bin)
+			return execute(bin)
+		},
+	}
+)
+
+func purec(ctx *cli.Context, name string) error {
+	cmd := exec.Command("purec", name)
+	cmd.Stdin = ctx.App.Reader
+	cmd.Stdout = ctx.App.Writer
+	cmd.Stderr = ctx.App.ErrWriter
+	return cmd.Run()
+}
+
+func execute(name string) error {
 	src, err := machine.SourceFromFile(name)
 	if err != nil {
 		return err
