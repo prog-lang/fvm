@@ -90,7 +90,7 @@ var instructions = [opcode.Count]func([]uint8) Do{
 			args := proc.stack.Take(argc)
 			object := proc.stack.Pop()
 			for _, arg := range args {
-				object = object.(Function).Feed(arg)
+				object = object.(Function).Apply(arg)
 			}
 			proc.stack.Push(object)
 		}
@@ -98,7 +98,7 @@ var instructions = [opcode.Count]func([]uint8) Do{
 	func(_ []uint8) Do {
 		return func(proc *Proc) {
 			log.Debug("EXEC")
-			proc.stack.Push(proc.stack.Pop().(Function).Feed(Unit{}))
+			proc.stack.Push(proc.stack.Pop().(Function).Apply(Unit{}))
 		}
 	},
 	func(_ []uint8) Do {

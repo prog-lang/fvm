@@ -124,7 +124,7 @@ var (
 			fn := args[0].(Function)
 			cmd := args[1].(Cmd)
 			return Cmd(func() Object {
-				return fn.Feed(cmd.Exec())
+				return fn.Apply(cmd.Exec())
 			})
 		},
 	)
@@ -159,7 +159,7 @@ var (
 			cmd := args[0].(Cmd)
 			fn := args[1].(Function)
 			return Cmd(func() Object {
-				return fn.Feed(cmd.Exec())
+				return fn.Apply(cmd.Exec())
 			})
 		},
 	)

@@ -109,7 +109,7 @@ func execute(name string) error {
 		return err
 	}
 
-	proc.Feed(machine.Unit{})
+	proc.Apply(machine.Unit{})
 	return nil
 }
 

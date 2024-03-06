@@ -18,7 +18,7 @@ type Function interface {
 	// Example:
 	//
 	//  add := stdlib[std.Add_I32] // add expects 2 arguments
-	//  add1 := add.Feed(int32(1))
-	//  result := add1.(Function).Feed(int32(2)) // result == int32(3)
-	Feed(arg Object) Object
+	//  add1 := add.Apply(int32(1))
+	//  result := add1.(Function).Apply(int32(2)) // result == int32(3)
+	Apply(arg Object) Object
 }

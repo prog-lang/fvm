@@ -33,7 +33,7 @@ package machine
 // said logic within itself!
 type Cmd func() Object
 
-func (io Cmd) Feed(arg Object) Object {
+func (io Cmd) Apply(arg Object) Object {
 	return io()
 }
 

@@ -41,7 +41,7 @@ func MakeProc(data Data, code Code, ip, argc uint32) Proc {
 	}
 }
 
-func (proc Proc) Feed(arg Object) Object {
+func (proc Proc) Apply(arg Object) Object {
 	proc.args = append(proc.args, arg)
 	if uint32(len(proc.args)) >= proc.argc {
 		return proc.call()
@@ -50,7 +50,7 @@ func (proc Proc) Feed(arg Object) Object {
 }
 
 func (proc Proc) Exec() Object {
-	return proc.Feed(Unit{})
+	return proc.Apply(Unit{})
 }
 
 func (proc Proc) call() Object {

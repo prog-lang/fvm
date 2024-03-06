@@ -19,7 +19,7 @@ func MakeFn(argc uint32, eval Eval) Fn {
 	}
 }
 
-func (fn Fn) Feed(arg Object) Object {
+func (fn Fn) Apply(arg Object) Object {
 	fn.args = append(fn.args, arg)
 	if uint32(len(fn.args)) >= fn.argc {
 		return fn.call()
