@@ -17,7 +17,7 @@ func TestSource(t *testing.T) {
 	first := addr(8)
 	codeSection := []uint8{
 		// main :: Str
-		uint8(PUSH_FN), 0, 0, 0, uint8(std.Print), 0, 0, 0, // print
+		uint8(PUSH_FN), 0, 0, 0, uint8(std.Print_Str), 0, 0, 0, // print
 		uint8(PUSH_FN), 0, 0, 0, uint8(std.Show_I32), 0, 0, 0, // print show[i32]
 		uint8(PUSH_PROC), 0, 0, 0, first, 0, 0, 0, // print show[i32] first
 		uint8(PUSH_I32), 0, 0, 0, 42, 0, 0, 0, // print show[i32] first 42

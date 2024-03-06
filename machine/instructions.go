@@ -103,19 +103,6 @@ var instructions = [opcode.Count]func([]uint8) Do{
 	},
 	func(_ []uint8) Do {
 		return func(proc *Proc) {
-			log.Debug("BRANCH")
-			condition := proc.stack.Pop().(bool)
-			left := proc.stack.Pop().(Function)
-			right := proc.stack.Pop().(Function)
-			if condition {
-				proc.stack.Push(left)
-			} else {
-				proc.stack.Push(right)
-			}
-		}
-	},
-	func(_ []uint8) Do {
-		return func(proc *Proc) {
 			log.Debug("RETURN")
 			proc.done = true
 		}

@@ -36,3 +36,7 @@ type Cmd func() Object
 func (io Cmd) Feed(arg Object) Object {
 	return io()
 }
+
+func (io Cmd) Exec() Object {
+	return io()
+}
