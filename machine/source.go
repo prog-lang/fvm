@@ -11,8 +11,8 @@ import (
 // Example:
 //
 //	src, _ := SourceFromFile("executable")
-//	cmd, _ := src.Main()
-//	cmd.Feed(Unit{})
+//	proc, _ := src.Main()
+//	proc.Feed(Unit{})
 type Source struct {
 	r io.Reader
 }
@@ -31,21 +31,21 @@ func SourceFromReader(r io.Reader) *Source {
 	}
 }
 
-func (src *Source) Main() (Cmd, error) {
+func (src *Source) Main() (Proc, error) {
 	const start = 0
 	const argc = 0
 
 	data, err := src.data()
 	if err != nil {
-		return Cmd{}, err
+		return Proc{}, err
 	}
 
 	code, err := src.code()
 	if err != nil {
-		return Cmd{}, err
+		return Proc{}, err
 	}
 
-	return MakeCmd(ReadOnly(data), ReadOnly(code), start, argc), nil
+	return MakeProc(ReadOnly(data), ReadOnly(code), start, argc), nil
 }
 
 func (src *Source) data() ([]uint8, error) {

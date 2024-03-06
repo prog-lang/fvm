@@ -2,6 +2,7 @@ package machine
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/prog-lang/pure/std"
 
@@ -45,13 +46,23 @@ var stdlib = [std.Count]Fn{
 			return args[0].(int32) / args[1].(int32)
 		},
 	),
+	MakeFn(
+		1,
+		func(args []Object) Object {
+			log.Debug("show[i32]", "args", args)
+			return strconv.FormatInt(int64(args[0].(int32)), 10)
+		},
+	),
 
 	MakeFn(
 		1,
 		func(args []Object) Object {
 			log.Debug("print", "args", args)
-			fmt.Print(args[0])
-			return Unit{}
+			return Cmd(func() Object {
+				str := args[0].(string)
+				fmt.Print(str)
+				return str
+			})
 		},
 	),
 }

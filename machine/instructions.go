@@ -9,7 +9,7 @@ import (
 // This array contains the entire instruction set of the Pure machine.
 var instructions = [opcode.Count]func([]uint8) Do{
 	func(_ []uint8) Do {
-		return func(cmd *Cmd) {
+		return func(proc *Proc) {
 			log.Debug("NOP")
 		}
 	},
@@ -17,101 +17,107 @@ var instructions = [opcode.Count]func([]uint8) Do{
 	/* Stack manipulation */
 
 	func(_ []uint8) Do {
-		return func(cmd *Cmd) {
+		return func(proc *Proc) {
 			log.Debug("PUSH_UNIT")
-			cmd.stack.Push(Unit{})
+			proc.stack.Push(Unit{})
 		}
 	},
 	func(operand []uint8) Do {
-		return func(cmd *Cmd) {
+		return func(proc *Proc) {
 			b := U8AsBool(operand[0])
 			log.Debug("PUSH_BOOL", "bool", b)
-			cmd.stack.Push(b)
+			proc.stack.Push(b)
 		}
 	},
 	func(operand []uint8) Do {
-		return func(cmd *Cmd) {
+		return func(proc *Proc) {
 			u8 := operand[0]
 			log.Debug("PUSH_U8", "u8", u8)
-			cmd.stack.Push(u8)
+			proc.stack.Push(u8)
 		}
 	},
 	func(operand []uint8) Do {
-		return func(cmd *Cmd) {
+		return func(proc *Proc) {
 			i32 := U8x4AsI32(operand)
 			log.Debug("PUSH_I32", "i32", i32)
-			cmd.stack.Push(i32)
+			proc.stack.Push(i32)
 		}
 	},
 	func(operand []uint8) Do {
-		return func(cmd *Cmd) {
+		return func(proc *Proc) {
 			addr := U8x4AsI32(operand)
 			log.Debug("PUSH_FN", "@", addr)
-			cmd.stack.Push(stdlib[addr])
+			proc.stack.Push(stdlib[addr])
 		}
 	},
 	func(operand []uint8) Do {
 		// At IP we expect to see a NOP instruction. Its operand must specify
-		// the argument count for the Cmd.
+		// the argument count for the proc.
 		//
 		//     *-- opcode ---*-- operand --*
 		// IP: | 00 00 00 00 | 03 00 00 00 |
 		//     *-- NOP ------*-- argc(3) --*
 		//
-		return func(cmd *Cmd) {
+		return func(proc *Proc) {
 			ip := U8x4AsU32(operand)
-			_, operand := cmd.code.FetchInstruction(ip)
+			_, operand := proc.code.FetchInstruction(ip)
 			argc := U8x4AsU32(operand)
-			log.Debug("PUSH_CMD", "@", ip, "argc", argc)
-			cmd.stack.Push(MakeCmd(cmd.data, cmd.code, ip, argc))
+			log.Debug("PUSH_PROC", "@", ip, "argc", argc)
+			proc.stack.Push(MakeProc(proc.data, proc.code, ip, argc))
 		}
 	},
 	func(operand []uint8) Do {
-		return func(cmd *Cmd) {
+		return func(proc *Proc) {
 			index := U8x4AsU32(operand)
 			log.Debug("PUSH_ARG", "#", index)
-			cmd.stack.Push(cmd.args[index])
+			proc.stack.Push(proc.args[index])
 		}
 	},
 	func(operand []uint8) Do {
-		return func(cmd *Cmd) {
+		return func(proc *Proc) {
 			n := U8x4AsU32(operand)
 			log.Debug("DROP", "n", n)
-			cmd.stack.Drop(n)
+			proc.stack.Drop(n)
 		}
 	},
 
 	/* Program flow */
 
 	func(operand []uint8) Do {
-		return func(cmd *Cmd) {
+		return func(proc *Proc) {
 			argc := U8x4AsU32(operand)
 			log.Debug("FEED", "argc", argc)
-			args := cmd.stack.Take(argc)
-			object := cmd.stack.Pop()
+			args := proc.stack.Take(argc)
+			object := proc.stack.Pop()
 			for _, arg := range args {
 				object = object.(Function).Feed(arg)
 			}
-			cmd.stack.Push(object)
+			proc.stack.Push(object)
 		}
 	},
 	func(_ []uint8) Do {
-		return func(cmd *Cmd) {
+		return func(proc *Proc) {
+			log.Debug("EXEC")
+			proc.stack.Push(proc.stack.Pop().(Function).Feed(Unit{}))
+		}
+	},
+	func(_ []uint8) Do {
+		return func(proc *Proc) {
 			log.Debug("BRANCH")
-			condition := cmd.stack.Pop().(bool)
-			left := cmd.stack.Pop().(Function)
-			right := cmd.stack.Pop().(Function)
+			condition := proc.stack.Pop().(bool)
+			left := proc.stack.Pop().(Function)
+			right := proc.stack.Pop().(Function)
 			if condition {
-				cmd.stack.Push(left)
+				proc.stack.Push(left)
 			} else {
-				cmd.stack.Push(right)
+				proc.stack.Push(right)
 			}
 		}
 	},
 	func(_ []uint8) Do {
-		return func(cmd *Cmd) {
+		return func(proc *Proc) {
 			log.Debug("RETURN")
-			cmd.done = true
+			proc.done = true
 		}
 	},
 }

@@ -104,12 +104,12 @@ func execute(name string) error {
 		return err
 	}
 
-	cmd, err := src.Main()
+	proc, err := src.Main()
 	if err != nil {
 		return err
 	}
 
-	cmd.Feed(machine.Unit{})
+	proc.Feed(machine.Unit{})
 	return nil
 }
 

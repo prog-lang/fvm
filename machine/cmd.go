@@ -1,69 +1,38 @@
 package machine
 
-import "fmt"
-
-// Cmd (a.k.a. "Command") is a
+// Cmd (a.k.a. "Command") is a special kind of a Function that represents
+// some sort of communicational logic (as opposed to computational logic).
 //
-//  1. sequence of executable instructions
-//  2. that follows the Function interface
-//  3. and can be treated like a regular Object
+// Given function f defined as
 //
-// It is used to contain compiled bytecode instructions generated from the
-// human-written source code.
-type Cmd struct {
-	data  Data
-	code  Code
-	ip    uint32
-	argc  uint32
-	args  []Object
-	stack *Stack[Object]
-	done  bool
-}
+//	f :: I32 -> I32;
+//	f := x -> x + 2;
+//
+// f is a (pure) computational function. Its "reach" is limited to its own
+// arguments. Whereas
+//
+//	http.get :: Str -> Cmd http.Response;
+//
+// http.get is an (impure) communicational function that relies on the internet
+// connection.
+//
+// Other languages might type our http.get function as
+//
+//	http.get :: Str -> http.Response;
+//
+// but Pure is a purely functional programming language! Therefore, our promise
+// to the programmer is that any Pure function, given the same arguments, is
+// going to always return the same value. If we were to say that http.get simply
+// returns an http.Response, we would break that promise, since, http.get can
+// return a different http.Response for the same URL (as it depends on the logic
+// of the server on the other side).
+//
+// As a rule of thumb, any function that performs I/O of any kind is going to
+// have to return a Cmd. It makes sense - the http.Response might be different
+// but the logic behind retrieving it is the same. Cmd is the type that contains
+// said logic within itself!
+type Cmd func() Object
 
-type Data interface {
-	ReadAt(addr, length uint32) []uint8
-}
-
-type Code interface {
-	Fetch(addr uint32) Do
-	FetchInstruction(addr uint32) (opcode uint32, operand []uint8)
-}
-
-type Do func(*Cmd)
-
-func MakeCmd(data Data, code Code, ip, argc uint32) Cmd {
-	return Cmd{
-		data: data,
-		code: code,
-		ip:   ip,
-		argc: argc,
-		args: make([]Object, 0),
-	}
-}
-
-func (cmd Cmd) Feed(arg Object) Object {
-	cmd.args = append(cmd.args, arg)
-	if uint32(len(cmd.args)) >= cmd.argc {
-		return cmd.call()
-	}
-	return cmd
-}
-
-func (cmd Cmd) call() Object {
-	cmd.stack = NewStack[Object](Unit{})
-	//*                         ^^^^^^^^
-	//? Unit{} is the default return value of any Cmd.
-	//? It is pushed to the bottom of the data stack by default in order to
-	//? forego return emptiness checks.
-
-	for !cmd.done {
-		cmd.code.Fetch(cmd.ip)(&cmd)
-		cmd.ip += SizeInstruction
-	}
-
-	return cmd.stack.Pop()
-}
-
-func (cmd Cmd) String() string {
-	return fmt.Sprintf("Cmd<%d>(%d/%d)", cmd.ip, len(cmd.args), cmd.argc)
+func (io Cmd) Feed(arg Object) Object {
+	return io()
 }

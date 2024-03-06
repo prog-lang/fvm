@@ -1,6 +1,6 @@
 package machine
 
-// ROM (a.k.a "Read-Only Memory") implements the Data and Code interfaces. It is
+// ROM (a.k.a. "Read-Only Memory") implements the Data and Code interfaces. It is
 // useful for different operations on bytes.
 type ROM struct {
 	bytes []uint8

@@ -2,7 +2,7 @@ package machine
 
 import "fmt"
 
-// Fn (a.k.a "Builtin Function") is a special type that implement the Function
+// Fn (a.k.a. "Builtin Function") is a special type that implement the Function
 // interface. It is used to carry stdlib functions.
 type Fn struct {
 	argc uint32
