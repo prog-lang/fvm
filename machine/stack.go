@@ -21,7 +21,7 @@ func (s *Stack[T]) Pop() (creme T) {
 	return s.Take(1)[0]
 }
 
-func (s *Stack[T]) Take(offset uint32) (creme []T) {
+func (s *Stack[T]) Take(offset uint64) (creme []T) {
 	creme = s.Glance(offset)
 	s.Drop(offset)
 	return
@@ -31,17 +31,17 @@ func (s *Stack[T]) Peek() T {
 	return s.Glance(1)[0]
 }
 
-func (s *Stack[T]) Glance(offset uint32) []T {
+func (s *Stack[T]) Glance(offset uint64) []T {
 	return s.values[s.Top(offset):]
 }
 
-func (s *Stack[T]) Drop(offset uint32) *Stack[T] {
+func (s *Stack[T]) Drop(offset uint64) *Stack[T] {
 	s.values = s.values[:s.Top(offset)]
 	return s
 }
 
-func (s *Stack[T]) Top(offset uint32) uint32 {
-	return uint32(len(s.values)) - offset
+func (s *Stack[T]) Top(offset uint64) uint64 {
+	return uint64(len(s.values)) - offset
 }
 
 func (s *Stack[T]) Empty() bool {

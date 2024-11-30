@@ -7,12 +7,12 @@ import "fmt"
 type Fn struct {
 	eval Eval
 	args []Object
-	argc uint32
+	argc uint64
 }
 
 type Eval func(args []Object) Object
 
-func MakeFn(argc uint32, eval Eval) Fn {
+func MakeFn(argc uint64, eval Eval) Fn {
 	return Fn{
 		argc: argc,
 		eval: eval,
@@ -21,7 +21,7 @@ func MakeFn(argc uint32, eval Eval) Fn {
 
 func (fn Fn) Feed(arg Object) Object {
 	fn.args = append(fn.args, arg)
-	if uint32(len(fn.args)) >= fn.argc {
+	if uint64(len(fn.args)) >= fn.argc {
 		return fn.call()
 	}
 	return fn

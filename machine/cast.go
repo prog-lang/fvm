@@ -22,6 +22,13 @@ func U8x4AsU32(b []uint8) (i uint32) {
 	return
 }
 
+func U8x8AsI64(b []uint8) (i int64) {
+	for x := 0; x < 8; x++ {
+		i |= int64(b[x]) << (8 * x)
+	}
+	return
+}
+
 func U8x8AsU64(b []uint8) (i uint64) {
 	for x := 0; x < 8; x++ {
 		i |= uint64(b[x]) << (8 * x)
@@ -56,6 +63,10 @@ func BoolAsEmoji(t bool) rune {
 		return '✅'
 	}
 	return '❌'
+}
+
+func I64AsBool(i int64) bool {
+	return i != 0
 }
 
 func I32AsBool(i int32) bool {

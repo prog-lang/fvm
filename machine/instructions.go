@@ -38,9 +38,16 @@ var instructions = [opcode.Count]func([]uint8) Do{
 	},
 	func(operand []uint8) Do {
 		return func(cmd *Cmd) {
-			i32 := U8x4AsI32(operand)
-			log.Debug("PUSH_I32", "i32", i32)
-			cmd.stack.Push(i32)
+			u32 := U8x4AsU32(operand)
+			log.Debug("PUSH_CHAR", "u32", u32)
+			cmd.stack.Push(u32)
+		}
+	},
+	func(operand []uint8) Do {
+		return func(cmd *Cmd) {
+			i64 := U8x8AsI64(operand)
+			log.Debug("PUSH_I64", "i64", i64)
+			cmd.stack.Push(i64)
 		}
 	},
 	func(operand []uint8) Do {
@@ -54,28 +61,28 @@ var instructions = [opcode.Count]func([]uint8) Do{
 		// At IP we expect to see a NOP instruction. Its operand must specify
 		// the argument count for the Cmd.
 		//
-		//     *-- opcode ---*-- operand --*
-		// IP: | 00 00 00 00 | 03 00 00 00 |
-		//     *-- NOP ------*-- argc(3) --*
+		//     *-- opcode ---------------*-- operand --------------*
+		// IP: | 00 00 00 00 00 00 00 00 | 03 00 00 00 00 00 00 00 |
+		//     *-- NOP ------------------*-- argc(3) --------------*
 		//
 		return func(cmd *Cmd) {
-			ip := U8x4AsU32(operand)
+			ip := U8x8AsU64(operand)
 			_, operand := cmd.code.FetchInstruction(ip)
-			argc := U8x4AsU32(operand)
+			argc := U8x8AsU64(operand)
 			log.Debug("PUSH_CMD", "@", ip, "argc", argc)
 			cmd.stack.Push(MakeCmd(cmd.data, cmd.code, ip, argc))
 		}
 	},
 	func(operand []uint8) Do {
 		return func(cmd *Cmd) {
-			index := U8x4AsU32(operand)
+			index := U8x8AsU64(operand)
 			log.Debug("PUSH_ARG", "#", index)
 			cmd.stack.Push(cmd.args[index])
 		}
 	},
 	func(operand []uint8) Do {
 		return func(cmd *Cmd) {
-			n := U8x4AsU32(operand)
+			n := U8x8AsU64(operand)
 			log.Debug("DROP", "n", n)
 			cmd.stack.Drop(n)
 		}
@@ -85,7 +92,7 @@ var instructions = [opcode.Count]func([]uint8) Do{
 
 	func(operand []uint8) Do {
 		return func(cmd *Cmd) {
-			argc := U8x4AsU32(operand)
+			argc := U8x8AsU64(operand)
 			log.Debug("FEED", "argc", argc)
 			args := cmd.stack.Take(argc)
 			object := cmd.stack.Pop()

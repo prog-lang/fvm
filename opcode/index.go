@@ -1,14 +1,15 @@
 package opcode
 
 const (
-	NOP uint32 = iota // DO NOTHING
+	NOP uint64 = iota // DO NOTHING
 
 	/* Stack manipulation */
 
 	PUSH_UNIT // Push unit onto the stack
 	PUSH_BOOL // Push bool onto the stack
 	PUSH_U8   // Push u8 onto the stack
-	PUSH_I32  // Push i32 onto the stack
+	PUSH_CHAR // Push char (rune) onto the stack
+	PUSH_I64  // Push i32 onto the stack
 	PUSH_FN   // Push fn onto the stack (std)
 	PUSH_CMD  // Push cmd onto the stack
 	PUSH_ARG  // Push cmd argument (by its index) onto the stack

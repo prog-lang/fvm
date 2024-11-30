@@ -15,23 +15,23 @@ type Cmd struct {
 	code  Code
 	stack *Stack[Object]
 	args  []Object
-	ip    uint32
-	argc  uint32
+	ip    uint64
+	argc  uint64
 	done  bool
 }
 
 type Data interface {
-	ReadAt(addr, length uint32) []uint8
+	ReadAt(addr, length uint64) []uint8
 }
 
 type Code interface {
-	Fetch(addr uint32) Do
-	FetchInstruction(addr uint32) (opcode uint32, operand []uint8)
+	Fetch(addr uint64) Do
+	FetchInstruction(addr uint64) (opcode uint64, operand []uint8)
 }
 
 type Do func(*Cmd)
 
-func MakeCmd(data Data, code Code, ip, argc uint32) Cmd {
+func MakeCmd(data Data, code Code, ip, argc uint64) Cmd {
 	return Cmd{
 		data: data,
 		code: code,
@@ -43,7 +43,7 @@ func MakeCmd(data Data, code Code, ip, argc uint32) Cmd {
 
 func (cmd Cmd) Feed(arg Object) Object {
 	cmd.args = append(cmd.args, arg)
-	if uint32(len(cmd.args)) >= cmd.argc {
+	if uint64(len(cmd.args)) >= cmd.argc {
 		return cmd.call()
 	}
 	return cmd
