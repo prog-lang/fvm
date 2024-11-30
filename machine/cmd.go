@@ -13,10 +13,10 @@ import "fmt"
 type Cmd struct {
 	data  Data
 	code  Code
+	stack *Stack[Object]
+	args  []Object
 	ip    uint32
 	argc  uint32
-	args  []Object
-	stack *Stack[Object]
 	done  bool
 }
 
